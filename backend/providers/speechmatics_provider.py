@@ -62,19 +62,25 @@ class SpeechmaticsProvider(BaseSTTProvider):
             # Get additional vocab from config
             additional_vocab = self.config.get("additional_vocab", [])
 
-            voice_config = VoiceAgentConfig(
-                operating_point=operating_point,
-                language=self.config.get("language", "en"),
-                max_delay=max_delay_value,
-                end_of_utterance_mode=eou_mode,
-                end_of_utterance_silence_trigger=float(self.config.get("endOfUtteranceSilenceTrigger", 0.8)),
-                end_of_utterance_max_delay=float(self.config.get("endOfUtteranceMaxDelay", 10.0)),
-                enable_diarization=diarization_enabled,
-                include_results=True,
-                sample_rate=self.config.get("sampleRate", 16000),
-                audio_encoding=AudioEncoding.PCM_S16LE,
-                additional_vocab=additional_vocab if additional_vocab else None,
-            )
+            # Build config dict
+            config_dict = {
+                "operating_point": operating_point,
+                "language": self.config.get("language", "en"),
+                "max_delay": max_delay_value,
+                "end_of_utterance_mode": eou_mode,
+                "end_of_utterance_silence_trigger": float(self.config.get("endOfUtteranceSilenceTrigger", 0.8)),
+                "end_of_utterance_max_delay": float(self.config.get("endOfUtteranceMaxDelay", 10.0)),
+                "enable_diarization": diarization_enabled,
+                "include_results": True,
+                "sample_rate": self.config.get("sampleRate", 16000),
+                "audio_encoding": AudioEncoding.PCM_S16LE,
+            }
+
+            # Only add additional_vocab if it's not empty
+            if additional_vocab:
+                config_dict["additional_vocab"] = additional_vocab
+
+            voice_config = VoiceAgentConfig(**config_dict)
 
             logger.info(f"VoiceAgentConfig created with max_delay={voice_config.max_delay}")
 
