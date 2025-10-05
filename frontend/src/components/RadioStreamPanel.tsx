@@ -32,39 +32,13 @@ const RADIO_STATIONS: RadioStation[] = [
     url: 'https://icecast.radiofrance.fr/franceinter-midfi.mp3',
     language: 'fr'
   },
-  {
-    id: 'france-info',
-    name: 'France Info (French)',
-    url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
-    language: 'fr'
-  },
 
   // German
-  {
-    id: 'bayern2',
-    name: 'Bayern 2 (German)',
-    url: 'https://br-br2-sued.cast.addradio.de/br/br2/sued/mp3/128/stream.mp3',
-    language: 'de'
-  },
   {
     id: 'deutschlandfunk',
     name: 'Deutschlandfunk (German)',
     url: 'https://st01.sslstream.dlf.de/dlf/01/128/mp3/stream.mp3',
     language: 'de'
-  },
-
-  // Arabic
-  {
-    id: 'monte-carlo-arabic',
-    name: 'Monte Carlo Doualiya (Arabic)',
-    url: 'https://montecarlodoualiya64k.ice.infomaniak.ch/mc-doualiya.mp3',
-    language: 'ar'
-  },
-  {
-    id: 'medi1',
-    name: 'Medi 1 (Arabic)',
-    url: 'https://radio.medi1.com/medi1',
-    language: 'ar'
   }
 ]
 

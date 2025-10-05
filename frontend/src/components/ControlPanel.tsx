@@ -1,5 +1,5 @@
 import React from 'react'
-import { Play, Square, RotateCcw } from 'lucide-react'
+import { Mic, Square, RotateCcw } from 'lucide-react'
 import { useComparison } from '../contexts/ComparisonContext'
 import { cn } from '../lib/utils'
 
@@ -50,7 +50,7 @@ export const ControlPanel: React.FC = () => {
         >
           {canStart && (
             <>
-              <Play size={16} />
+              <Mic size={16} />
               Start Speaking
             </>
           )}
