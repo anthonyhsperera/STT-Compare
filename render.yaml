@@ -13,12 +13,11 @@ services:
         value: 10000
 
   # Frontend Static Site
-  - type: web
+  - type: static
     name: stt-compare-frontend
-    runtime: node
-    rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
+    rootDir: frontend
     envVars:
       - key: VITE_API_URL
         sync: false
