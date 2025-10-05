@@ -45,6 +45,20 @@ export function loadConfig(): AppConfig {
     const stored = localStorage.getItem(CONFIG_STORAGE_KEY)
     if (stored) {
       const parsed = JSON.parse(stored)
+
+      // Migration: convert old customDictionary to new additional_vocab format
+      if (parsed.speechmatics?.customDictionary) {
+        const oldDict = parsed.speechmatics.customDictionary
+        if (Array.isArray(oldDict)) {
+          // Convert string[] to AdditionalVocabItem[]
+          parsed.speechmatics.additional_vocab = oldDict.map((word: string) => ({
+            content: word
+          }))
+        }
+        // Remove old field
+        delete parsed.speechmatics.customDictionary
+      }
+
       // Deep merge to ensure new config fields are included
       const merged = {
         speechmatics: { ...DEFAULT_CONFIG.speechmatics, ...parsed.speechmatics },
