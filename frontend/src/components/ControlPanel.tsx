@@ -25,7 +25,12 @@ export const ControlPanel: React.FC = () => {
         <h3 className="text-lg font-semibold">Live Mic Transcription</h3>
 
         {appError && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded text-red-800 text-sm">
+          <div className={cn(
+            "p-3 border rounded text-sm",
+            appError.includes('Only') && appError.includes('will be used')
+              ? "bg-blue-50 border-blue-200 text-blue-800"
+              : "bg-red-50 border-red-200 text-red-800"
+          )}>
             {appError}
           </div>
         )}

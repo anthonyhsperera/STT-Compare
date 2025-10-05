@@ -155,19 +155,31 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       return
     }
 
-    // Validate API keys
-    if (!config.speechmatics.apiKey || !config.deepgram.apiKey) {
-      setAppError('Please provide API keys for both Speechmatics and Deepgram')
+    // Validate API keys - at least one is required
+    const hasSpeechmatics = !!config.speechmatics.apiKey
+    const hasDeepgram = !!config.deepgram.apiKey
+
+    if (!hasSpeechmatics && !hasDeepgram) {
+      setAppError('Please provide at least one API key (Speechmatics or Deepgram)')
       return
     }
 
     setRecordingState('starting')
-    setAppError(null)
+
+    // Show info message if only one provider is available
+    if (!hasSpeechmatics || !hasDeepgram) {
+      const missingProvider = !hasSpeechmatics ? 'Speechmatics' : 'Deepgram'
+      const activeProvider = hasSpeechmatics ? 'Speechmatics' : 'Deepgram'
+      setAppError(`Only ${activeProvider} will be used (${missingProvider} API key not provided)`)
+    } else {
+      setAppError(null)
+    }
+
     resetProviderOutputs()
 
     setProviderOutputs(prev => ({
-      speechmatics: { ...prev.speechmatics, statusMessage: 'Initializing...' },
-      deepgram: { ...prev.deepgram, statusMessage: 'Initializing...' }
+      speechmatics: { ...prev.speechmatics, statusMessage: hasSpeechmatics ? 'Initializing...' : 'API key not provided' },
+      deepgram: { ...prev.deepgram, statusMessage: hasDeepgram ? 'Initializing...' : 'API key not provided' }
     }))
 
     try {
@@ -194,8 +206,8 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       sourceNodeRef.current = context.createMediaStreamSource(stream)
 
       setProviderOutputs(prev => ({
-        speechmatics: { ...prev.speechmatics, statusMessage: 'Connecting...' },
-        deepgram: { ...prev.deepgram, statusMessage: 'Connecting...' }
+        speechmatics: { ...prev.speechmatics, statusMessage: hasSpeechmatics ? 'Connecting...' : 'API key not provided' },
+        deepgram: { ...prev.deepgram, statusMessage: hasDeepgram ? 'Connecting...' : 'API key not provided' }
       }))
       setRecordingState('connecting')
 
@@ -208,8 +220,8 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       wsRef.current.onopen = () => {
         setRecordingState('recording')
         setProviderOutputs(prev => ({
-          speechmatics: { ...prev.speechmatics, statusMessage: 'Recording...' },
-          deepgram: { ...prev.deepgram, statusMessage: 'Recording...' }
+          speechmatics: { ...prev.speechmatics, statusMessage: hasSpeechmatics ? 'Recording...' : 'API key not provided' },
+          deepgram: { ...prev.deepgram, statusMessage: hasDeepgram ? 'Recording...' : 'API key not provided' }
         }))
 
         // Send configuration
@@ -399,19 +411,31 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       return
     }
 
-    // Validate API keys
-    if (!config.speechmatics.apiKey || !config.deepgram.apiKey) {
-      setAppError('Please provide API keys for both Speechmatics and Deepgram')
+    // Validate API keys - at least one is required
+    const hasSpeechmatics = !!config.speechmatics.apiKey
+    const hasDeepgram = !!config.deepgram.apiKey
+
+    if (!hasSpeechmatics && !hasDeepgram) {
+      setAppError('Please provide at least one API key (Speechmatics or Deepgram)')
       return
     }
 
     setRadioStreamState('connecting')
-    setAppError(null)
+
+    // Show info message if only one provider is available
+    if (!hasSpeechmatics || !hasDeepgram) {
+      const missingProvider = !hasSpeechmatics ? 'Speechmatics' : 'Deepgram'
+      const activeProvider = hasSpeechmatics ? 'Speechmatics' : 'Deepgram'
+      setAppError(`Only ${activeProvider} will be used (${missingProvider} API key not provided)`)
+    } else {
+      setAppError(null)
+    }
+
     resetProviderOutputs()
 
     setProviderOutputs(prev => ({
-      speechmatics: { ...prev.speechmatics, statusMessage: `Connecting to ${stationName}...` },
-      deepgram: { ...prev.deepgram, statusMessage: `Connecting to ${stationName}...` }
+      speechmatics: { ...prev.speechmatics, statusMessage: hasSpeechmatics ? `Connecting to ${stationName}...` : 'API key not provided' },
+      deepgram: { ...prev.deepgram, statusMessage: hasDeepgram ? `Connecting to ${stationName}...` : 'API key not provided' }
     }))
 
     try {
@@ -487,8 +511,8 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
 
           setRadioStreamState('streaming')
           setProviderOutputs(prev => ({
-            speechmatics: { ...prev.speechmatics, statusMessage: `Streaming ${stationName}...` },
-            deepgram: { ...prev.deepgram, statusMessage: `Streaming ${stationName}...` }
+            speechmatics: { ...prev.speechmatics, statusMessage: hasSpeechmatics ? `Streaming ${stationName}...` : 'API key not provided' },
+            deepgram: { ...prev.deepgram, statusMessage: hasDeepgram ? `Streaming ${stationName}...` : 'API key not provided' }
           }))
         } catch (err) {
           console.error('Failed to setup audio processing:', err)
