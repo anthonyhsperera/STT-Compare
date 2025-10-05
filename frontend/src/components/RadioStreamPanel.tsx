@@ -69,13 +69,27 @@ const RADIO_STATIONS: RadioStation[] = [
 ]
 
 export const RadioStreamPanel: React.FC = () => {
-  const { radioStreamState, startRadioStream, stopRadioStream, appError } = useComparison()
-  const [selectedStation, setSelectedStation] = useState<string>(RADIO_STATIONS[0].id) // Default to World Service
+  const { radioStreamState, startRadioStream, stopRadioStream, appError, config, updateConfig } = useComparison()
+  const [selectedStation, setSelectedStation] = useState<string>(RADIO_STATIONS[0].id) // Default to NPR News
 
   const handleStartStop = () => {
     if (radioStreamState === 'idle') {
       const station = RADIO_STATIONS.find(s => s.id === selectedStation)
       if (station) {
+        // Update language settings if station has a different language
+        if (station.language && station.language !== config.speechmatics.language) {
+          updateConfig({
+            ...config,
+            speechmatics: {
+              ...config.speechmatics,
+              language: station.language
+            },
+            deepgram: {
+              ...config.deepgram,
+              language: station.language
+            }
+          })
+        }
         startRadioStream(station.url, station.name)
       }
     } else {
