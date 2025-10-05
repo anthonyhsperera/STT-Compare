@@ -77,9 +77,61 @@ function AppContent() {
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white/60 backdrop-blur mt-12">
         <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between text-sm text-slate-500">
-            <p>Real-time Speech-to-Text Comparison Tool</p>
-            <p>Built with React, TypeScript & Vite</p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between text-sm text-slate-500">
+              <p>Real-time Speech-to-Text Comparison Tool</p>
+              <p>Built with React, TypeScript & Vite</p>
+            </div>
+
+            <div className="border-t border-slate-200 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <h3 className="font-semibold text-slate-700 mb-2">Project</h3>
+                  <a
+                    href="https://github.com/anthonyhsperera/STT-Compare"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 hover:underline block"
+                  >
+                    GitHub Repository
+                  </a>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-slate-700 mb-2">Speechmatics Docs</h3>
+                  <div className="space-y-1">
+                    <a
+                      href="https://docs.speechmatics.com/speech-to-text/realtime/output#latency"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 hover:underline block"
+                    >
+                      Real-time Output & Latency
+                    </a>
+                    <a
+                      href="https://github.com/speechmatics/speechmatics-python-sdk/tree/feature/voice-package-update/sdk/voice"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 hover:underline block"
+                    >
+                      Python SDK (Voice)
+                    </a>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-slate-700 mb-2">Deepgram Docs</h3>
+                  <a
+                    href="https://developers.deepgram.com/docs/live-streaming-audio"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 hover:underline block"
+                  >
+                    Live Streaming Audio
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
