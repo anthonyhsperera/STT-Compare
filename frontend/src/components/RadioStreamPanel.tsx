@@ -44,7 +44,7 @@ const RADIO_STATIONS: RadioStation[] = [
 
 export const RadioStreamPanel: React.FC = () => {
   const { radioStreamState, startRadioStream, stopRadioStream, appError, config, updateConfig } = useComparison()
-  const [selectedStation, setSelectedStation] = useState<string>(RADIO_STATIONS[0].id) // Default to NPR News
+  const [selectedStation, setSelectedStation] = useState<string>('bbc-world-service') // Default to BBC World Service
 
   const handleStartStop = () => {
     if (radioStreamState === 'idle') {
