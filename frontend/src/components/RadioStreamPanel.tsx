@@ -19,12 +19,6 @@ const RADIO_STATIONS: RadioStation[] = [
     language: 'en'
   },
   {
-    id: 'cnn-audio',
-    name: 'CNN Audio (English)',
-    url: 'https://tunein.streamguys1.com/cnn',
-    language: 'en'
-  },
-  {
     id: 'bbc-world-service',
     name: 'BBC World Service (English)',
     url: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
