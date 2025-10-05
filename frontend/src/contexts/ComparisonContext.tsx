@@ -362,6 +362,9 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       audioElementRef.current = null
     }
 
+    // Clear any errors when stopping
+    setAppError(null)
+
     if (radioWsRef.current) {
       if (radioWsRef.current.readyState === WebSocket.OPEN) {
         radioWsRef.current.send('END')
@@ -519,8 +522,14 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
 
         audio.addEventListener('error', (err) => {
           console.error('Audio loading error:', err)
-          setAppError(`Failed to load stream. Check the URL and CORS settings.`)
-          stopRadioStreamInternal()
+          // Only show error if we're not intentionally stopping
+          setRadioStreamState(prevState => {
+            if (prevState !== 'stopping' && prevState !== 'idle') {
+              setAppError(`Failed to load stream. Check the URL and CORS settings.`)
+              stopRadioStreamInternal()
+            }
+            return prevState
+          })
         })
       } else if (Hls.isSupported()) {
         // Use hls.js for HLS streams (Chrome, Firefox)
