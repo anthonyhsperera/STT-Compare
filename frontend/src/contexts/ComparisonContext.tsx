@@ -504,9 +504,27 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
         }
       }
 
-      // Check if HLS is supported and load stream accordingly
-      if (Hls.isSupported()) {
-        // Use hls.js for browsers without native HLS support (Chrome, Firefox)
+      // Check if it's a direct audio stream (MP3, AAC, etc.) or HLS stream
+      const isDirectAudio = /\.(mp3|aac|ogg|wav|flac)(\?.*)?$/i.test(streamUrl) ||
+                           !streamUrl.includes('.m3u8')
+
+      if (isDirectAudio) {
+        // Direct audio stream - no need for HLS.js
+        console.log('Loading direct audio stream:', streamUrl)
+        audio.src = streamUrl
+        audio.addEventListener('canplay', () => {
+          console.log('Direct audio stream ready, setting up audio processing')
+          setupAudioProcessing()
+        }, { once: true })
+
+        audio.addEventListener('error', (err) => {
+          console.error('Audio loading error:', err)
+          setAppError(`Failed to load stream. Check the URL and CORS settings.`)
+          stopRadioStreamInternal()
+        })
+      } else if (Hls.isSupported()) {
+        // Use hls.js for HLS streams (Chrome, Firefox)
+        console.log('Loading HLS stream with hls.js:', streamUrl)
         const hls = new Hls({
           enableWorker: true,
           lowLatencyMode: true
@@ -529,13 +547,14 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
         })
       } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
         // Safari native HLS support
+        console.log('Loading HLS stream with native Safari support:', streamUrl)
         audio.src = streamUrl
         audio.addEventListener('loadedmetadata', () => {
           console.log('Native HLS loaded, setting up audio processing')
           setupAudioProcessing()
         }, { once: true })
       } else {
-        throw new Error('HLS not supported in this browser')
+        throw new Error('Stream format not supported in this browser')
       }
 
       radioWsRef.current.onmessage = (event: MessageEvent) => {
