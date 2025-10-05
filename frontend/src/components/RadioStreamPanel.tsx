@@ -182,7 +182,7 @@ export const RadioStreamPanel: React.FC = () => {
         </div>
 
         <div className="text-xs text-gray-500 bg-blue-50 border border-blue-200 rounded p-2">
-          <p><strong>Note:</strong> All stations are international and should work globally.</p>
+          <p><strong>Note:</strong> All stations are international and should work globally. Language settings will automatically update to match the selected station.</p>
         </div>
       </div>
     </div>
