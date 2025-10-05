@@ -13,15 +13,21 @@ interface RadioStation {
 const RADIO_STATIONS: RadioStation[] = [
   // International / English
   {
-    id: 'bbc-world-service',
-    name: 'BBC World Service (English)',
-    url: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service.m3u8',
+    id: 'npr-news',
+    name: 'NPR News (English)',
+    url: 'https://npr-ice.streamguys1.com/live.mp3',
     language: 'en'
   },
   {
-    id: 'monocle24',
-    name: 'Monocle 24 (English)',
-    url: 'https://monocle.en.sharp-stream.com/monocle24.aac',
+    id: 'cnn-audio',
+    name: 'CNN Audio (English)',
+    url: 'https://tunein.streamguys1.com/cnn',
+    language: 'en'
+  },
+  {
+    id: 'bbc-world-service',
+    name: 'BBC World Service (English)',
+    url: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
     language: 'en'
   },
 
@@ -53,17 +59,17 @@ const RADIO_STATIONS: RadioStation[] = [
     language: 'fr'
   },
   {
-    id: 'rfi-french',
-    name: 'RFI (French)',
-    url: 'https://rfifm64k.ice.infomaniak.ch/rfifm-64.mp3',
+    id: 'france-info',
+    name: 'France Info (French)',
+    url: 'https://icecast.radiofrance.fr/franceinfo-midfi.mp3',
     language: 'fr'
   },
 
   // German
   {
-    id: 'dw-german',
-    name: 'Deutsche Welle (German)',
-    url: 'https://dw-radioeins.akacast.akamaistream.net/7/785/3673891/v1/gnl.akacast.akamaistream.net/dw-radioeins',
+    id: 'bayern2',
+    name: 'Bayern 2 (German)',
+    url: 'https://br-br2-sued.cast.addradio.de/br/br2/sued/mp3/128/stream.mp3',
     language: 'de'
   },
   {
@@ -75,15 +81,15 @@ const RADIO_STATIONS: RadioStation[] = [
 
   // Arabic
   {
-    id: 'bbc-arabic',
-    name: 'BBC Arabic (Arabic)',
-    url: 'http://stream.live.vc.bbcmedia.co.uk/bbc_arabic_radio',
-    language: 'ar'
-  },
-  {
     id: 'monte-carlo-arabic',
     name: 'Monte Carlo Doualiya (Arabic)',
     url: 'https://montecarlodoualiya64k.ice.infomaniak.ch/mc-doualiya.mp3',
+    language: 'ar'
+  },
+  {
+    id: 'medi1',
+    name: 'Medi 1 (Arabic)',
+    url: 'https://radio.medi1.com/medi1',
     language: 'ar'
   }
 ]
