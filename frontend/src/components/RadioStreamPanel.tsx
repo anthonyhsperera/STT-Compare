@@ -15,7 +15,7 @@ const RADIO_STATIONS: RadioStation[] = [
   {
     id: 'bbc-world-service',
     name: 'BBC World Service (English)',
-    url: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
+    url: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service.m3u8',
     language: 'en'
   },
   {
