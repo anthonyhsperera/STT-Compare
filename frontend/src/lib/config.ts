@@ -7,7 +7,7 @@ export const DEFAULT_CONFIG: AppConfig = {
     enablePunctuation: true,
     enableDiarization: true,
     enablePartials: true,
-    customDictionary: [],
+    additional_vocab: [],
     operatingPoint: 'enhanced',
     maxDelay: 1.2,
     endOfUtteranceSilenceTrigger: 0.8,

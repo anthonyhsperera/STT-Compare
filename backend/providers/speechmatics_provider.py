@@ -59,6 +59,9 @@ class SpeechmaticsProvider(BaseSTTProvider):
             max_delay_value = float(self.config.get("maxDelay", 1.2))
             logger.info(f"Setting max_delay to: {max_delay_value}")
 
+            # Get additional vocab from config
+            additional_vocab = self.config.get("additional_vocab", [])
+
             voice_config = VoiceAgentConfig(
                 operating_point=operating_point,
                 language=self.config.get("language", "en"),
@@ -70,6 +73,7 @@ class SpeechmaticsProvider(BaseSTTProvider):
                 include_results=True,
                 sample_rate=self.config.get("sampleRate", 16000),
                 audio_encoding=AudioEncoding.PCM_S16LE,
+                additional_vocab=additional_vocab if additional_vocab else None,
             )
 
             logger.info(f"VoiceAgentConfig created with max_delay={voice_config.max_delay}")

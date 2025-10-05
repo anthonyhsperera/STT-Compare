@@ -38,13 +38,18 @@ export type RadioStreamState =
   | 'streaming'
   | 'stopping'
 
+export interface AdditionalVocabItem {
+  content: string
+  sounds_like?: string[]
+}
+
 export interface SpeechmaticsConfig {
   apiKey: string
   language: string
   enablePunctuation: boolean
   enableDiarization: boolean
   enablePartials: boolean
-  customDictionary: string[]
+  additional_vocab: AdditionalVocabItem[]
   operatingPoint: string
   maxDelay: number
   endOfUtteranceSilenceTrigger: number
