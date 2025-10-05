@@ -1,0 +1,27 @@
+services:
+  # Backend API Service
+  - type: web
+    name: stt-compare-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: PORT
+        value: 10000
+
+  # Frontend Static Site
+  - type: web
+    name: stt-compare-frontend
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+        # Set this to your backend URL after deployment, e.g., https://stt-compare-api.onrender.com
+      - key: NODE_VERSION
+        value: 20
