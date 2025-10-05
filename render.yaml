@@ -12,12 +12,13 @@ services:
       - key: PORT
         value: 10000
 
-  # Frontend Static Site
-  - type: static
+  # Frontend Web Service
+  - type: web
     name: stt-compare-frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    runtime: node
     rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist -l $PORT
     envVars:
       - key: VITE_API_URL
         sync: false
