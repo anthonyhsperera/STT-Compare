@@ -31,26 +31,6 @@ const RADIO_STATIONS: RadioStation[] = [
     language: 'en'
   },
 
-  // BBC UK (may have geo-restrictions)
-  {
-    id: 'radio4',
-    name: 'BBC Radio 4 (UK)',
-    url: 'http://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio%3d96000.norewind.m3u8',
-    language: 'en'
-  },
-  {
-    id: 'radio1',
-    name: 'BBC Radio 1 (UK)',
-    url: 'http://as-hls-ww-live.akamaized.net/pool_01505109/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d96000.norewind.m3u8',
-    language: 'en'
-  },
-  {
-    id: 'radio2',
-    name: 'BBC Radio 2 (UK)',
-    url: 'http://as-hls-ww-live.akamaized.net/pool_74208725/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d96000.norewind.m3u8',
-    language: 'en'
-  },
-
   // French
   {
     id: 'france-inter',
@@ -194,7 +174,7 @@ export const RadioStreamPanel: React.FC = () => {
         </div>
 
         <div className="text-xs text-gray-500 bg-blue-50 border border-blue-200 rounded p-2">
-          <p><strong>Note:</strong> Some BBC UK stations may have geographic restrictions and only work from the UK. International stations (BBC World Service, Monocle 24, etc.) should work globally.</p>
+          <p><strong>Note:</strong> All stations are international and should work globally.</p>
         </div>
       </div>
     </div>
