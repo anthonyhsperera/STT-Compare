@@ -5,7 +5,7 @@ export const DEFAULT_CONFIG: AppConfig = {
     apiKey: '',
     language: 'en',
     enablePunctuation: true,
-    enableDiarization: false,
+    enableDiarization: true,
     enablePartials: true,
     customDictionary: [],
     operatingPoint: 'enhanced',
@@ -28,7 +28,7 @@ export const DEFAULT_CONFIG: AppConfig = {
     smart_format: true,
     filler_words: false,
     numerals: true,
-    diarize: false
+    diarize: true
   },
   audio: {
     sampleRate: 16000,
