@@ -91,8 +91,16 @@ class SpeechmaticsProvider(BaseSTTProvider):
                 voice_config.prefer_current_speaker = self.config.get("preferCurrentSpeaker", False)
                 logger.info(f"Diarization enabled with: sensitivity={voice_config.speaker_sensitivity}, max_speakers={voice_config.max_speakers}, prefer_current={voice_config.prefer_current_speaker}")
 
-            # Create client with API key
-            self.voice_client = VoiceAgentClient(api_key=self.api_key, config=voice_config)
+            # Get regional endpoint if specified
+            endpoint_url = self.config.get("endpoint")
+
+            # Create client with API key and optional regional endpoint
+            if endpoint_url:
+                logger.info(f"Using custom Speechmatics endpoint: {endpoint_url}")
+                self.voice_client = VoiceAgentClient(api_key=self.api_key, url=endpoint_url, config=voice_config)
+            else:
+                # Use default endpoint
+                self.voice_client = VoiceAgentClient(api_key=self.api_key, config=voice_config)
 
             # Register event handlers BEFORE connecting
             @self.voice_client.on(AgentServerMessageType.ADD_PARTIAL_SEGMENT)

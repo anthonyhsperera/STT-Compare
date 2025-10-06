@@ -46,6 +46,7 @@ export interface AdditionalVocabItem {
 export interface SpeechmaticsConfig {
   apiKey: string
   language: string
+  endpoint?: string
   enablePunctuation: boolean
   enableDiarization: boolean
   enablePartials: boolean
