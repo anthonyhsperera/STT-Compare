@@ -45,3 +45,23 @@ export function resample(
   }
   return outputBuffer
 }
+
+export function getApiUrl(): string {
+  // 1. Use explicit environment variable if set
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL
+  }
+
+  // 2. Auto-detect Render production environment
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname
+
+    // If running on Render.com, use the production backend URL
+    if (hostname.includes('onrender.com')) {
+      return 'https://stt-compare-api.onrender.com'
+    }
+  }
+
+  // 3. Default to localhost for development
+  return 'http://localhost:8000'
+}

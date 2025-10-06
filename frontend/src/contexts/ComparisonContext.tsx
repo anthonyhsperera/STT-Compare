@@ -9,7 +9,7 @@ import type {
   TranscriptPart,
   AppConfig
 } from '../types'
-import { floatTo16BitPCM, resample } from '../lib/utils'
+import { floatTo16BitPCM, resample, getApiUrl } from '../lib/utils'
 import { loadConfig, saveConfig } from '../lib/config'
 
 interface ComparisonContextState {
@@ -212,7 +212,7 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       setRecordingState('connecting')
 
       // Create WebSocket connection
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const apiUrl = getApiUrl()
       const wsUrl = apiUrl.replace(/^http/, 'ws') + '/ws/transcribe'
       wsRef.current = new WebSocket(wsUrl)
       wsRef.current.binaryType = 'arraybuffer'
@@ -453,7 +453,7 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       radioAudioContextRef.current = context
 
       // Create WebSocket connection
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const apiUrl = getApiUrl()
       const wsUrl = apiUrl.replace(/^http/, 'ws') + '/ws/transcribe'
       radioWsRef.current = new WebSocket(wsUrl)
       radioWsRef.current.binaryType = 'arraybuffer'
