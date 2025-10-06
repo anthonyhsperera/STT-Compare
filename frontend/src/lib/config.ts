@@ -4,7 +4,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   speechmatics: {
     apiKey: '',
     language: 'en',
-    endpoint: 'wss://wus.rt.speechmatics.com/v2',
+    endpoint: 'wss://us.rt.speechmatics.com/v2',
     enablePunctuation: true,
     enableDiarization: true,
     enablePartials: true,
