@@ -18,6 +18,7 @@ interface ComparisonContextState {
   providerOutputs: ProviderOutputs
   appError: string | null
   config: AppConfig
+  radioVolume: number
 }
 
 interface ComparisonContextActions {
@@ -28,6 +29,7 @@ interface ComparisonContextActions {
   clearTranscripts: () => void
   updateConfig: (newConfig: AppConfig) => void
   testConnection: (provider: ProviderName) => Promise<boolean>
+  setRadioVolume: (volume: number) => void
 }
 
 type ComparisonContextType = ComparisonContextState & ComparisonContextActions
@@ -58,6 +60,7 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
   const [providerOutputs, setProviderOutputs] = useState<ProviderOutputs>(initializeProviderOutputs)
   const [appError, setAppError] = useState<string | null>(null)
   const [config, setConfig] = useState<AppConfig>(loadConfig)
+  const [radioVolume, setRadioVolumeState] = useState<number>(1.0)
 
   const wsRef = useRef<WebSocket | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -72,6 +75,7 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
   const radioAudioContextRef = useRef<AudioContext | null>(null)
   const radioSourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null)
   const radioProcessorNodeRef = useRef<ScriptProcessorNode | null>(null)
+  const radioGainNodeRef = useRef<GainNode | null>(null)
   const radioWsRef = useRef<WebSocket | null>(null)
   const radioStreamStateRef = useRef(radioStreamState)
 
@@ -93,6 +97,14 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
     // This will be implemented when we add the backend
     console.log(`Testing connection for ${provider}`)
     return true
+  }, [])
+
+  const setRadioVolume = useCallback((volume: number) => {
+    const clampedVolume = Math.max(0, Math.min(1, volume))
+    setRadioVolumeState(clampedVolume)
+    if (radioGainNodeRef.current) {
+      radioGainNodeRef.current.gain.value = clampedVolume
+    }
   }, [])
 
   const stopRecordingInternal = useCallback(() => {
@@ -351,6 +363,11 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       radioProcessorNodeRef.current = null
     }
 
+    if (radioGainNodeRef.current) {
+      radioGainNodeRef.current.disconnect()
+      radioGainNodeRef.current = null
+    }
+
     if (radioSourceNodeRef.current) {
       radioSourceNodeRef.current.disconnect()
       radioSourceNodeRef.current = null
@@ -445,7 +462,7 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       // Create audio element for HLS stream
       const audio = new Audio()
       audio.crossOrigin = 'anonymous'
-      audio.volume = 1.0 // Set volume to maximum
+      audio.volume = 1.0 // Keep at full volume for transcription quality
       audio.muted = false // Ensure not muted
       audioElementRef.current = audio
 
@@ -485,9 +502,17 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
 
           radioProcessorNodeRef.current = context.createScriptProcessor(4096, 1, 1)
 
-          // Connect source to both processor (for transcription) and destination (for audio output)
+          // Create gain node for volume control (only affects playback, not transcription)
+          const gainNode = context.createGain()
+          gainNode.gain.value = radioVolume // Set to current volume
+          radioGainNodeRef.current = gainNode
+
+          // Connect audio graph:
+          // source -> processor (for transcription at full volume)
+          // source -> gainNode -> destination (for playback with volume control)
           source.connect(radioProcessorNodeRef.current)
-          source.connect(context.destination) // Direct connection for audio playback
+          source.connect(gainNode)
+          gainNode.connect(context.destination)
           radioProcessorNodeRef.current.connect(context.destination)
 
           radioProcessorNodeRef.current.onaudioprocess = (e: AudioProcessingEvent) => {
@@ -654,7 +679,7 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       setAppError(`Failed to start radio stream: ${message}`)
       stopRadioStreamInternal()
     }
-  }, [config, radioStreamState, stopRadioStreamInternal, resetProviderOutputs])
+  }, [config, radioStreamState, stopRadioStreamInternal, resetProviderOutputs, radioVolume])
 
   const stopRadioStream = useCallback(() => {
     if (radioStreamState !== 'idle' && radioStreamState !== 'stopping') {
@@ -675,13 +700,15 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
     providerOutputs,
     appError,
     config,
+    radioVolume,
     startRecording,
     stopRecording,
     startRadioStream,
     stopRadioStream,
     clearTranscripts,
     updateConfig,
-    testConnection
+    testConnection,
+    setRadioVolume
   }
 
   return (

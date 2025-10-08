@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Radio, Play, Square } from 'lucide-react'
+import { Radio, Play, Square, Volume2 } from 'lucide-react'
 import { useComparison } from '../contexts/ComparisonContext'
 import { cn } from '../lib/utils'
 
@@ -43,7 +43,7 @@ const RADIO_STATIONS: RadioStation[] = [
 ]
 
 export const RadioStreamPanel: React.FC = () => {
-  const { radioStreamState, startRadioStream, stopRadioStream, appError, config, updateConfig } = useComparison()
+  const { radioStreamState, startRadioStream, stopRadioStream, appError, config, updateConfig, radioVolume, setRadioVolume } = useComparison()
   const [selectedStation, setSelectedStation] = useState<string>('bbc-world-service') // Default to BBC World Service
 
   const handleStartStop = () => {
@@ -78,9 +78,26 @@ export const RadioStreamPanel: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-2">
-        <Radio className="text-blue-600" size={20} />
-        <h3 className="text-lg font-semibold">Live Radio Stream</h3>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Radio className="text-blue-600" size={20} />
+          <h3 className="text-lg font-semibold">Live Radio Stream</h3>
+        </div>
+        <div className="flex items-center gap-2">
+          <Volume2 className="text-gray-600" size={16} />
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={radioVolume * 100}
+            onChange={(e) => setRadioVolume(parseInt(e.target.value) / 100)}
+            className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            style={{
+              background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${radioVolume * 100}%, #e5e7eb ${radioVolume * 100}%, #e5e7eb 100%)`
+            }}
+          />
+          <span className="text-xs text-gray-600 w-8 text-right">{Math.round(radioVolume * 100)}%</span>
+        </div>
       </div>
 
       {appError && (
