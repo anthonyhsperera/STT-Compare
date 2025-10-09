@@ -79,6 +79,10 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
   const radioWsRef = useRef<WebSocket | null>(null)
   const radioStreamStateRef = useRef(radioStreamState)
 
+  // Cold start detection refs
+  const connectionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const radioConnectionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
   const resetProviderOutputs = useCallback(() => {
     setProviderOutputs(initializeProviderOutputs())
   }, [])
@@ -109,6 +113,12 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
 
   const stopRecordingInternal = useCallback(() => {
     setRecordingState('stopping')
+
+    // Clear cold start timeout
+    if (connectionTimeoutRef.current) {
+      clearTimeout(connectionTimeoutRef.current)
+      connectionTimeoutRef.current = null
+    }
 
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop())
@@ -223,6 +233,20 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       }))
       setRecordingState('connecting')
 
+      // Set up cold start detection timeout
+      connectionTimeoutRef.current = setTimeout(() => {
+        setProviderOutputs(prev => ({
+          speechmatics: {
+            ...prev.speechmatics,
+            statusMessage: hasSpeechmatics ? 'Connecting... (Backend server is waking up, this may take 30-60 seconds on first connection)' : 'API key not provided'
+          },
+          deepgram: {
+            ...prev.deepgram,
+            statusMessage: hasDeepgram ? 'Connecting... (Backend server is waking up, this may take 30-60 seconds on first connection)' : 'API key not provided'
+          }
+        }))
+      }, 3000) // Show cold start message after 3 seconds
+
       // Create WebSocket connection
       const apiUrl = getApiUrl()
       const wsUrl = apiUrl.replace(/^http/, 'ws') + '/ws/transcribe'
@@ -230,6 +254,12 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       wsRef.current.binaryType = 'arraybuffer'
 
       wsRef.current.onopen = () => {
+        // Clear cold start timeout since connection succeeded
+        if (connectionTimeoutRef.current) {
+          clearTimeout(connectionTimeoutRef.current)
+          connectionTimeoutRef.current = null
+        }
+
         setRecordingState('recording')
         setProviderOutputs(prev => ({
           speechmatics: { ...prev.speechmatics, statusMessage: hasSpeechmatics ? 'Recording...' : 'API key not provided' },
@@ -357,6 +387,12 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
   const stopRadioStreamInternal = useCallback(() => {
     setRadioStreamState('stopping')
 
+    // Clear cold start timeout
+    if (radioConnectionTimeoutRef.current) {
+      clearTimeout(radioConnectionTimeoutRef.current)
+      radioConnectionTimeoutRef.current = null
+    }
+
     if (radioProcessorNodeRef.current) {
       radioProcessorNodeRef.current.disconnect()
       radioProcessorNodeRef.current.onaudioprocess = null
@@ -455,6 +491,20 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       deepgram: { ...prev.deepgram, statusMessage: hasDeepgram ? `Connecting to ${stationName}...` : 'API key not provided' }
     }))
 
+    // Set up cold start detection timeout
+    radioConnectionTimeoutRef.current = setTimeout(() => {
+      setProviderOutputs(prev => ({
+        speechmatics: {
+          ...prev.speechmatics,
+          statusMessage: hasSpeechmatics ? 'Connecting... (Backend server is waking up, this may take 30-60 seconds on first connection)' : 'API key not provided'
+        },
+        deepgram: {
+          ...prev.deepgram,
+          statusMessage: hasDeepgram ? 'Connecting... (Backend server is waking up, this may take 30-60 seconds on first connection)' : 'API key not provided'
+        }
+      }))
+    }, 3000) // Show cold start message after 3 seconds
+
     try {
       const CustomAudioContext = window.AudioContext || (window as CustomWindow).webkitAudioContext
       if (!CustomAudioContext) throw new Error('AudioContext not supported.')
@@ -547,6 +597,12 @@ export const ComparisonProvider = ({ children }: { children: React.ReactNode }) 
       }
 
       radioWsRef.current.onopen = () => {
+        // Clear cold start timeout since connection succeeded
+        if (radioConnectionTimeoutRef.current) {
+          clearTimeout(radioConnectionTimeoutRef.current)
+          radioConnectionTimeoutRef.current = null
+        }
+
         // Send configuration
         if (radioWsRef.current) {
           radioWsRef.current.send(JSON.stringify({
